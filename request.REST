@@ -1,0 +1,23 @@
+POST http://localhost:5000/jmt/user/new
+Content-Type: application/json
+
+{
+    "text" : "Tanmay patil"
+}
+
+###get users
+GET  http://localhost:5000/jmt/users
+
+###
+POST http://localhost:5000/login/new
+Content-Type: application/json
+
+{
+    "text" : "RIL"
+}
+
+### Delete user
+DELETE http://localhost:5000/user/delete/64492fd752226536db347251
+
+###get logins
+GET  http://localhost:5000/logins
