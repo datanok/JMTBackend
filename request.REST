@@ -1,23 +1,26 @@
-POST http://localhost:5000/jmt/user/new
+POST http://localhost:5001/jmt/user/new
 Content-Type: application/json
 
 {
-    "text" : "Tanmay patil"
+    "text" : "Tanmddday patil"
 }
 
 ###get users
 GET  http://localhost:5000/jmt/users
 
 ###
-POST http://localhost:5000/login/new
+POST http://localhost:5001/login/new
 Content-Type: application/json
 
 {
     "text" : "RIL"
 }
-
+###
+DELETE  http://localhost:5001/test
+###
+DELETE http://localhost:5001/user/delete-all
 ### Delete user
-DELETE http://localhost:5000/user/delete/64492fd752226536db347251
+DELETE http://localhost:5001/user/delete/64492fd752226536db347251
 
 ###get logins
-GET  http://localhost:5000/logins
+GET  http://localhost:5001/logins

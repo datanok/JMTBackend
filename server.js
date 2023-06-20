@@ -12,6 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to the MongoDB database using Mongoose
+const uri = "mongodb+srv://tanmaypatiltp25:9224063412Ta@cluster0.wgvt5xh.mongodb.net/?retryWrites=true&w=majority";
 
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
@@ -27,13 +28,28 @@ const User = require("./models/User");
 const Login = require("./models/Login");
 
 //create new user
-app.post("/jmt/user/new", (req, res) => {
-  const user = new User({
-    name: req.body.text,
-  });
-  user.save();
-  res.json(user);
+app.post("/jmt/user/new", async (req, res) => {
+  try {
+    const userData = req.body;
+
+    if (Array.isArray(userData)) {
+      // Batch creation of users
+      const createdUsers = await User.create(userData);
+      res.json(createdUsers);
+    } else {
+      // Single user creation
+      const user = new User({
+        name: userData.text,
+      });
+      await user.save();
+      res.json(user);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to create user(s)" });
+  }
 });
+
 //get all users
 app.get("/jmt/users", async (req, res) => {
   const users = await User.find();
@@ -46,13 +62,35 @@ app.delete("/user/delete/:id", async (req, res) => {
   res.json(result);
 });
 
+app.delete("/user/delete-all", async (req, res) => {
+  const result = await User.deleteMany({});
+  res.json(result);
+});
+
+
 //create new Login
-app.post("/login/new", (req, res) => {
-  const login = new Login({
-    name: req.body.text,
-  });
-  login.save();
-  res.json(login);
+app.post("/login/new", async (req, res) => {
+  try {
+    const loginData = req.body;
+    console.log(loginData)
+
+    if (Array.isArray(loginData)) {
+      // Batch creation of logins
+      const createdLogins = await Login.create(loginData);
+      console.log(createdLogins);
+      res.json(createdLogins);
+    } else {
+      // Single login creation
+      const login = new Login({
+        name: loginData.text,
+      });
+      await login.save();
+      res.json(login);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to create login(s)" });
+  }
 });
 
 //get all logins
@@ -67,6 +105,16 @@ app.delete("/login/delete/:id", async (req, res) => {
   const result = await Login.findByIdAndDelete(req.params.id);
   res.json(result);
 });
+app.delete("/login/delete-all", async (req, res) => {
+  try {
+    const result = await Login.deleteMany({});
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while deleting documents." });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
